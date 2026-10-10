@@ -8,6 +8,7 @@ dependencies = [
     "uvicorn>=0.28.0",
     "pydantic>=2.6.0",
     "pydantic-settings>=2.2.0",
+    "email-validator>=2.2.0",
     "sqlalchemy>=2.0.28",
     "alembic>=1.13.1",
     "ortools>=9.9.3963",
@@ -29,3 +30,7 @@ build-backend = "setuptools.build_meta"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 pythonpath = ["."]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]

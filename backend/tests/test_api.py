@@ -1,6 +1,6 @@
 """End-to-end integration tests for FastAPI REST APIs."""
 import pytest
-from starlette.testclient import TestClient
+from fastapi.testclient import TestClient
 from app.main import app
 
 
