@@ -49,5 +49,5 @@ databases:
   # 3. Managed PostgreSQL Database
   - name: rsc-postgres
     databaseName: supply_chain
-    user: postgres
+    user: rsc_user
     plan: free
