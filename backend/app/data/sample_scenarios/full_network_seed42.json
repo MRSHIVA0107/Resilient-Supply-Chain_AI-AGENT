@@ -1,0 +1,1207 @@
+{
+  "scenario_id": "SCENARIO-DEMO-01",
+  "name": "Seven-Day Critical Supplier Shutdown (Baseline Scenario)",
+  "description": "Apex Semiconductor (S1) undergoes 7-day shutdown (Day 1-7). Testing multi-echelon recovery via alternate suppliers (S2, S3), plant flexibility, and expedited transport.",
+  "seed": 42,
+  "horizon_days": 14,
+  "disruptions": [
+    {
+      "id": "DISRUPT-SCENARIO-DEMO-01-S1",
+      "scenario_id": "SCENARIO-DEMO-01",
+      "target_node_id": "S1",
+      "disruption_type": "SUPPLIER_SHUTDOWN",
+      "start_day": 1,
+      "end_day": 7,
+      "severity": 1.0,
+      "prevents_new_shipments": true,
+      "prevents_in_transit_receipts": false
+    }
+  ],
+  "network_data": {
+    "nodes": [
+      {
+        "id": "S1",
+        "name": "Apex Semiconductor (Critical Supplier)",
+        "node_type": "SUPPLIER",
+        "location": "Hsinchu, Taiwan",
+        "capacity_per_day": 450.0,
+        "holding_cost_multiplier": 1.0
+      },
+      {
+        "id": "S2",
+        "name": "Pacific Silicon (Approved Alternate)",
+        "node_type": "SUPPLIER",
+        "location": "Kyoto, Japan",
+        "capacity_per_day": 350.0,
+        "holding_cost_multiplier": 1.0
+      },
+      {
+        "id": "S3",
+        "name": "EuroTech Electronics (Expedited Sourcing)",
+        "node_type": "SUPPLIER",
+        "location": "Dresden, Germany",
+        "capacity_per_day": 300.0,
+        "holding_cost_multiplier": 1.2
+      },
+      {
+        "id": "Plant-1",
+        "name": "Austin Assembly Plant",
+        "node_type": "PLANT",
+        "location": "Austin, TX, USA",
+        "capacity_per_day": 600.0,
+        "holding_cost_multiplier": 1.0
+      },
+      {
+        "id": "Plant-2",
+        "name": "Reno Regional Plant",
+        "node_type": "PLANT",
+        "location": "Reno, NV, USA",
+        "capacity_per_day": 300.0,
+        "holding_cost_multiplier": 1.1
+      },
+      {
+        "id": "DC-North",
+        "name": "Chicago Distribution Center",
+        "node_type": "DC",
+        "location": "Chicago, IL, USA",
+        "capacity_per_day": 1000.0,
+        "holding_cost_multiplier": 0.9
+      },
+      {
+        "id": "DC-South",
+        "name": "Dallas Distribution Center",
+        "node_type": "DC",
+        "location": "Dallas, TX, USA",
+        "capacity_per_day": 800.0,
+        "holding_cost_multiplier": 0.9
+      },
+      {
+        "id": "DC-West",
+        "name": "Los Angeles Distribution Center",
+        "node_type": "DC",
+        "location": "Ontario, CA, USA",
+        "capacity_per_day": 900.0,
+        "holding_cost_multiplier": 1.0
+      }
+    ],
+    "products": [
+      {
+        "id": "COMP-A",
+        "name": "Microcontroller SoC (Critical)",
+        "product_type": "RAW_COMPONENT",
+        "unit_holding_cost_per_day": 0.3,
+        "unit_backorder_penalty_per_day": 35.0
+      },
+      {
+        "id": "COMP-B",
+        "name": "Passive Component Pack",
+        "product_type": "RAW_COMPONENT",
+        "unit_holding_cost_per_day": 0.1,
+        "unit_backorder_penalty_per_day": 15.0
+      },
+      {
+        "id": "PROD-1",
+        "name": "Enterprise Gateway Hub (Tier-1)",
+        "product_type": "FINISHED_GOOD",
+        "unit_holding_cost_per_day": 1.5,
+        "unit_backorder_penalty_per_day": 120.0
+      },
+      {
+        "id": "PROD-2",
+        "name": "Standard IoT Node",
+        "product_type": "FINISHED_GOOD",
+        "unit_holding_cost_per_day": 0.8,
+        "unit_backorder_penalty_per_day": 60.0
+      }
+    ],
+    "boms": [
+      {
+        "id": "BOM-1",
+        "parent_product_id": "PROD-1",
+        "component_product_id": "COMP-A",
+        "quantity_required": 1.0
+      },
+      {
+        "id": "BOM-2",
+        "parent_product_id": "PROD-1",
+        "component_product_id": "COMP-B",
+        "quantity_required": 1.0
+      },
+      {
+        "id": "BOM-3",
+        "parent_product_id": "PROD-2",
+        "component_product_id": "COMP-B",
+        "quantity_required": 1.0
+      }
+    ],
+    "lanes": [
+      {
+        "id": "L-S1-P1",
+        "origin_node_id": "S1",
+        "destination_node_id": "Plant-1",
+        "normal_lead_time_days": 3,
+        "normal_cost_per_unit": 12.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 40.0,
+        "daily_capacity": 400.0
+      },
+      {
+        "id": "L-S2-P1",
+        "origin_node_id": "S2",
+        "destination_node_id": "Plant-1",
+        "normal_lead_time_days": 2,
+        "normal_cost_per_unit": 16.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 45.0,
+        "daily_capacity": 350.0
+      },
+      {
+        "id": "L-S3-P1",
+        "origin_node_id": "S3",
+        "destination_node_id": "Plant-1",
+        "normal_lead_time_days": 3,
+        "normal_cost_per_unit": 22.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 55.0,
+        "daily_capacity": 300.0
+      },
+      {
+        "id": "L-S2-P2",
+        "origin_node_id": "S2",
+        "destination_node_id": "Plant-2",
+        "normal_lead_time_days": 2,
+        "normal_cost_per_unit": 18.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 48.0,
+        "daily_capacity": 200.0
+      },
+      {
+        "id": "L-P1-DCN",
+        "origin_node_id": "Plant-1",
+        "destination_node_id": "DC-North",
+        "normal_lead_time_days": 1,
+        "normal_cost_per_unit": 6.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 18.0,
+        "daily_capacity": 350.0
+      },
+      {
+        "id": "L-P1-DCS",
+        "origin_node_id": "Plant-1",
+        "destination_node_id": "DC-South",
+        "normal_lead_time_days": 1,
+        "normal_cost_per_unit": 4.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 14.0,
+        "daily_capacity": 350.0
+      },
+      {
+        "id": "L-P1-DCW",
+        "origin_node_id": "Plant-1",
+        "destination_node_id": "DC-West",
+        "normal_lead_time_days": 2,
+        "normal_cost_per_unit": 9.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 24.0,
+        "daily_capacity": 250.0
+      },
+      {
+        "id": "L-P2-DCW",
+        "origin_node_id": "Plant-2",
+        "destination_node_id": "DC-West",
+        "normal_lead_time_days": 1,
+        "normal_cost_per_unit": 5.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 15.0,
+        "daily_capacity": 200.0
+      },
+      {
+        "id": "L-P2-DCS",
+        "origin_node_id": "Plant-2",
+        "destination_node_id": "DC-South",
+        "normal_lead_time_days": 2,
+        "normal_cost_per_unit": 8.0,
+        "expedited_lead_time_days": 1,
+        "expedited_cost_per_unit": 22.0,
+        "daily_capacity": 150.0
+      }
+    ],
+    "supplier_capabilities": [
+      {
+        "id": "CAP-S1-A",
+        "supplier_id": "S1",
+        "product_id": "COMP-A",
+        "unit_cost": 25.0,
+        "min_order_quantity": 50.0,
+        "max_daily_capacity": 350.0,
+        "lead_time_days": 3,
+        "is_qualified": true
+      },
+      {
+        "id": "CAP-S1-B",
+        "supplier_id": "S1",
+        "product_id": "COMP-B",
+        "unit_cost": 5.0,
+        "min_order_quantity": 50.0,
+        "max_daily_capacity": 400.0,
+        "lead_time_days": 3,
+        "is_qualified": true
+      },
+      {
+        "id": "CAP-S2-A",
+        "supplier_id": "S2",
+        "product_id": "COMP-A",
+        "unit_cost": 32.0,
+        "min_order_quantity": 30.0,
+        "max_daily_capacity": 220.0,
+        "lead_time_days": 2,
+        "is_qualified": true
+      },
+      {
+        "id": "CAP-S2-B",
+        "supplier_id": "S2",
+        "product_id": "COMP-B",
+        "unit_cost": 6.5,
+        "min_order_quantity": 50.0,
+        "max_daily_capacity": 350.0,
+        "lead_time_days": 2,
+        "is_qualified": true
+      },
+      {
+        "id": "CAP-S3-A",
+        "supplier_id": "S3",
+        "product_id": "COMP-A",
+        "unit_cost": 42.0,
+        "min_order_quantity": 20.0,
+        "max_daily_capacity": 200.0,
+        "lead_time_days": 2,
+        "is_qualified": true
+      }
+    ],
+    "initial_inventory": [
+      {
+        "id": "INV-P1-A",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "Plant-1",
+        "product_id": "COMP-A",
+        "day": 1,
+        "on_hand": 320.0,
+        "reserved": 40.0,
+        "safety_stock": 80.0
+      },
+      {
+        "id": "INV-P1-B",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "Plant-1",
+        "product_id": "COMP-B",
+        "day": 1,
+        "on_hand": 800.0,
+        "reserved": 60.0,
+        "safety_stock": 100.0
+      },
+      {
+        "id": "INV-P1-P1",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "Plant-1",
+        "product_id": "PROD-1",
+        "day": 1,
+        "on_hand": 150.0,
+        "reserved": 50.0,
+        "safety_stock": 40.0
+      },
+      {
+        "id": "INV-P1-P2",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "Plant-1",
+        "product_id": "PROD-2",
+        "day": 1,
+        "on_hand": 200.0,
+        "reserved": 40.0,
+        "safety_stock": 40.0
+      },
+      {
+        "id": "INV-P2-A",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "Plant-2",
+        "product_id": "COMP-A",
+        "day": 1,
+        "on_hand": 90.0,
+        "reserved": 10.0,
+        "safety_stock": 30.0
+      },
+      {
+        "id": "INV-P2-B",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "Plant-2",
+        "product_id": "COMP-B",
+        "day": 1,
+        "on_hand": 400.0,
+        "reserved": 20.0,
+        "safety_stock": 50.0
+      },
+      {
+        "id": "INV-P2-P1",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "Plant-2",
+        "product_id": "PROD-1",
+        "day": 1,
+        "on_hand": 60.0,
+        "reserved": 20.0,
+        "safety_stock": 20.0
+      },
+      {
+        "id": "INV-P2-P2",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "Plant-2",
+        "product_id": "PROD-2",
+        "day": 1,
+        "on_hand": 100.0,
+        "reserved": 20.0,
+        "safety_stock": 20.0
+      },
+      {
+        "id": "INV-DCN-P1",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 1,
+        "on_hand": 140.0,
+        "reserved": 30.0,
+        "safety_stock": 50.0
+      },
+      {
+        "id": "INV-DCN-P2",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 1,
+        "on_hand": 180.0,
+        "reserved": 30.0,
+        "safety_stock": 40.0
+      },
+      {
+        "id": "INV-DCS-P1",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 1,
+        "on_hand": 120.0,
+        "reserved": 20.0,
+        "safety_stock": 40.0
+      },
+      {
+        "id": "INV-DCS-P2",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 1,
+        "on_hand": 150.0,
+        "reserved": 20.0,
+        "safety_stock": 30.0
+      },
+      {
+        "id": "INV-DCW-P1",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 1,
+        "on_hand": 110.0,
+        "reserved": 20.0,
+        "safety_stock": 40.0
+      },
+      {
+        "id": "INV-DCW-P2",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 1,
+        "on_hand": 130.0,
+        "reserved": 20.0,
+        "safety_stock": 30.0
+      }
+    ],
+    "confirmed_inbound_shipments": [
+      {
+        "id": "SHIP-INB-01",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "origin_node_id": "S1",
+        "destination_node_id": "Plant-1",
+        "product_id": "COMP-A",
+        "quantity": 150.0,
+        "dispatch_day": 0,
+        "arrival_day": 2,
+        "is_expedited": false
+      },
+      {
+        "id": "SHIP-INB-02",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "origin_node_id": "S1",
+        "destination_node_id": "Plant-1",
+        "product_id": "COMP-B",
+        "quantity": 200.0,
+        "dispatch_day": 0,
+        "arrival_day": 1,
+        "is_expedited": false
+      }
+    ],
+    "demands": [
+      {
+        "id": "DEM-0001",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 1,
+        "quantity": 86.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0002",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 1,
+        "quantity": 51.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0003",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 1,
+        "quantity": 62.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0004",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 1,
+        "quantity": 44.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0005",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 1,
+        "quantity": 65.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0006",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 1,
+        "quantity": 49.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0007",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 2,
+        "quantity": 92.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0008",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 2,
+        "quantity": 52.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0009",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 2,
+        "quantity": 66.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0010",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 2,
+        "quantity": 41.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0011",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 2,
+        "quantity": 54.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0012",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 2,
+        "quantity": 45.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0013",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 3,
+        "quantity": 71.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0014",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 3,
+        "quantity": 55.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0015",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 3,
+        "quantity": 71.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0016",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 3,
+        "quantity": 51.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0017",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 3,
+        "quantity": 54.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0018",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 3,
+        "quantity": 47.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0019",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 4,
+        "quantity": 108.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0020",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 4,
+        "quantity": 60.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0021",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 4,
+        "quantity": 90.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0022",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 4,
+        "quantity": 65.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0023",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 4,
+        "quantity": 68.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0024",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 4,
+        "quantity": 46.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0025",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 5,
+        "quantity": 113.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0026",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 5,
+        "quantity": 70.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0027",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 5,
+        "quantity": 69.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0028",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 5,
+        "quantity": 50.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0029",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 5,
+        "quantity": 80.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0030",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 5,
+        "quantity": 56.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0031",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 6,
+        "quantity": 90.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0032",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 6,
+        "quantity": 68.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0033",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 6,
+        "quantity": 68.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0034",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 6,
+        "quantity": 59.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0035",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 6,
+        "quantity": 58.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0036",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 6,
+        "quantity": 46.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0037",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 7,
+        "quantity": 91.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0038",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 7,
+        "quantity": 65.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0039",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 7,
+        "quantity": 77.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0040",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 7,
+        "quantity": 52.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0041",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 7,
+        "quantity": 64.0,
+        "priority": "HIGH"
+      },
+      {
+        "id": "DEM-0042",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 7,
+        "quantity": 36.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0043",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 8,
+        "quantity": 76.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0044",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 8,
+        "quantity": 57.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0045",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 8,
+        "quantity": 57.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0046",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 8,
+        "quantity": 45.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0047",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 8,
+        "quantity": 52.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0048",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 8,
+        "quantity": 41.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0049",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 9,
+        "quantity": 86.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0050",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 9,
+        "quantity": 59.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0051",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 9,
+        "quantity": 64.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0052",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 9,
+        "quantity": 44.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0053",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 9,
+        "quantity": 55.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0054",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 9,
+        "quantity": 54.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0055",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 10,
+        "quantity": 86.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0056",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 10,
+        "quantity": 65.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0057",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 10,
+        "quantity": 59.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0058",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 10,
+        "quantity": 55.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0059",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 10,
+        "quantity": 53.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0060",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 10,
+        "quantity": 43.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0061",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 11,
+        "quantity": 114.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0062",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 11,
+        "quantity": 79.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0063",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 11,
+        "quantity": 83.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0064",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 11,
+        "quantity": 64.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0065",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 11,
+        "quantity": 80.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0066",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 11,
+        "quantity": 61.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0067",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 12,
+        "quantity": 91.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0068",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 12,
+        "quantity": 61.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0069",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 12,
+        "quantity": 75.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0070",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 12,
+        "quantity": 54.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0071",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 12,
+        "quantity": 65.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0072",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 12,
+        "quantity": 65.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0073",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 13,
+        "quantity": 92.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0074",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 13,
+        "quantity": 58.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0075",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 13,
+        "quantity": 71.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0076",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 13,
+        "quantity": 48.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0077",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 13,
+        "quantity": 68.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0078",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 13,
+        "quantity": 44.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0079",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-1",
+        "day": 14,
+        "quantity": 77.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0080",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-North",
+        "product_id": "PROD-2",
+        "day": 14,
+        "quantity": 56.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0081",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-1",
+        "day": 14,
+        "quantity": 69.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0082",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-South",
+        "product_id": "PROD-2",
+        "day": 14,
+        "quantity": 45.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0083",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-1",
+        "day": 14,
+        "quantity": 62.0,
+        "priority": "NORMAL"
+      },
+      {
+        "id": "DEM-0084",
+        "scenario_id": "SCENARIO-DEMO-01",
+        "node_id": "DC-West",
+        "product_id": "PROD-2",
+        "day": 14,
+        "quantity": 53.0,
+        "priority": "NORMAL"
+      }
+    ]
+  },
+  "snapshot_hash": "e3d66b0f133f087ec9d89a69448a7201ca19432c478b0e9736891495ac3349c8"
+}

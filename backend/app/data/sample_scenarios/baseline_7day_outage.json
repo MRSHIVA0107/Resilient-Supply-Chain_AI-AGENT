@@ -1,0 +1,18 @@
+{
+  "scenario_id": "SCENARIO-DEMO-01",
+  "name": "Seven-Day Critical Supplier Shutdown (Baseline)",
+  "seed": 42,
+  "horizon_days": 14,
+  "disruptions": [
+    {
+      "id": "DISRUPT-S1",
+      "target_node_id": "S1",
+      "disruption_type": "SUPPLIER_SHUTDOWN",
+      "start_day": 1,
+      "end_day": 7,
+      "severity": 1.0,
+      "prevents_new_shipments": true,
+      "prevents_in_transit_receipts": false
+    }
+  ]
+}
